@@ -53,7 +53,7 @@ const Navbar = () => {
             to="/"
             className="text-xl md:text-2xl font-bold text-blue-600 flex items-center"
           >
-            <span className="text-gradient">CertiVerse</span>
+            <span className="text-gradient">Level Up</span>
           </Link>
 
           {/* Desktop Navigation */}
