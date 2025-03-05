@@ -74,10 +74,17 @@ const Navbar = () => {
                 </li>
               ))}
             </ul>
-            <div className="ml-4">
-              <GradientButton size="sm" variant="default">
-                Sign In
-              </GradientButton>
+            <div className="ml-4 flex space-x-2">
+              <Link to="/login">
+                <GradientButton size="sm" variant="outline">
+                  Sign In
+                </GradientButton>
+              </Link>
+              <Link to="/register">
+                <GradientButton size="sm" variant="default">
+                  Register
+                </GradientButton>
+              </Link>
             </div>
           </div>
 
@@ -110,8 +117,13 @@ const Navbar = () => {
                 </li>
               ))}
             </ul>
-            <div className="px-4 pb-4">
-              <GradientButton fullWidth>Sign In</GradientButton>
+            <div className="px-4 pb-4 flex flex-col space-y-2">
+              <Link to="/login">
+                <GradientButton fullWidth variant="outline">Sign In</GradientButton>
+              </Link>
+              <Link to="/register">
+                <GradientButton fullWidth>Register</GradientButton>
+              </Link>
             </div>
           </div>
         )}

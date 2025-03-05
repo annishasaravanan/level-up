@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
             <Link to="/" className="text-xl font-bold text-blue-600 flex items-center">
-              <span className="text-gradient">CertiVerse</span>
+              <span className="text-gradient">Level Up</span>
             </Link>
             <p className="mt-4 text-sm text-gray-500 max-w-xs">
               The ultimate platform for students to track certifications, manage achievements, and climb department leaderboards.
@@ -97,7 +97,7 @@ const Footer = () => {
         
         <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center">
           <p className="text-xs text-gray-400">
-            &copy; {new Date().getFullYear()} CertiVerse. All rights reserved.
+            &copy; {new Date().getFullYear()} Level Up. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0 flex space-x-6">
             <a href="#" className="text-gray-400 hover:text-gray-500">

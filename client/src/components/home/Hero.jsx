@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { ChevronRight } from 'lucide-react';
 import GradientButton from '../ui/GradientButton';
 import { Link } from 'react-router-dom';
+import heroimage from "../../assets/graduation hats-rafiki.png"
 
 const Hero = () => {
   const heroRef = useRef(null);
@@ -102,16 +103,18 @@ const Hero = () => {
               <div className="absolute inset-0 bg-gradient-to-br from-blue-200/20 to-purple-200/20 rounded-xl blur-xl transform -rotate-6"></div>
               <div className="relative bg-white border border-gray-100 rounded-xl shadow-xl p-1 overflow-hidden">
                 <div ref={imageRef} className="bg-gray-100 aspect-video rounded-lg overflow-hidden flex items-center justify-center">
-                  <div className="text-xl font-bold text-gray-300">Dashboard Preview</div>
+                  <div className="" src={heroimage} alt="Graduation Hat flying in the sky">
+                    <img className="" src={heroimage} alt="Graduation Hat flyingon the sky" />
+                  </div>
                 </div>
               </div>
               
               {/* Floating elements */}
               <div className="absolute -top-6 -right-6 bg-white rounded-lg shadow-lg p-3 transform rotate-6 animate-float">
-                <div className="h-8 w-32 bg-gray-100 rounded-md"></div>
+                <div className="h-8 w-32 bg-gradient-to-l from-blue-500 to-blue-400 rounded-md"></div>
               </div>
               <div className="absolute -bottom-4 -left-4 bg-white rounded-lg shadow-lg p-3 transform -rotate-6 animate-float" style={{ animationDelay: '1s' }}>
-                <div className="h-8 w-24 bg-gray-100 rounded-md"></div>
+                <div className="h-8 w-24 bg-gradient-to-r from-blue-500 to-blue-400 rounded-md"></div>
               </div>
             </div>
           </div>
