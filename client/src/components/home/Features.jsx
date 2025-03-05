@@ -87,9 +87,11 @@ const Features = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <p className="text-sm font-medium text-blue-600 mb-3">FEATURES</p>
-          <AnimatedHeading gradient>
-            Everything you need to excel
-          </AnimatedHeading>
+          <div className="mb-10">
+            <AnimatedHeading gradient>
+              Everything you need to excel
+            </AnimatedHeading>
+          </div>
           <p className="mt-4 text-xl text-gray-600">
             Our platform brings together all your achievements in one place,
             helping you track progress and discover new opportunities.

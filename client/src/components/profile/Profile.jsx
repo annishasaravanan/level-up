@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { User, Mail, Briefcase, MapPin, Calendar, Award, Edit, Upload } from 'lucide-react';
+import { User, Mail, Briefcase, MapPin, Calendar, Award, Edit, Upload, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import GlassCard from '../ui/GlassCard';
 import GradientButton from '../ui/GradientButton';
 
@@ -118,7 +119,12 @@ const Profile = () => {
           <GlassCard>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">AI Recommendations</h3>
-              <span className="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded-full">Powered by AI</span>
+              <Link 
+                to="/ai-recommendations" 
+                className="text-sm text-blue-600 hover:text-blue-700 flex items-center"
+              >
+                View Full Page <ExternalLink size={14} className="ml-1" />
+              </Link>
             </div>
             
             <div className="space-y-3">

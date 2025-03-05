@@ -41,7 +41,7 @@ const AnimatedHeading = ({
     <h2
       ref={headingRef}
       className={cn(
-        'opacity-0 text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight transition-all duration-700',
+        'opacity-0 text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight transition-all duration-700 p-1',
         gradient && 'text-gradient',
         className
       )}
