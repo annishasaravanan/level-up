@@ -1,32 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Mail, Briefcase, MapPin, Calendar, Award, Edit, Upload, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import GlassCard from '../ui/GlassCard';
 import GradientButton from '../ui/GradientButton';
-import { useState } from 'react';
-import EditProfileDialog from './EditProfileDialog'
+import EditProfileDialog from './EditProfileDialog';
 
-// Sample data
-const profileData = {
-  name: 'Alex Johnson',
-  email: 'alex.johnson@university.edu',
-  department: 'Computer Science',
-  location: 'San Francisco, CA',
-  joinedDate: 'September 2022',
-  totalPoints: 1450,
-  rank: 7,
-  bio: 'Computer Science student with a passion for machine learning and web development. Looking to expand my knowledge in cloud computing and data science.',
-  interests: ['Machine Learning', 'Web Development', 'Cloud Computing', 'Data Science'],
-  recentCertificates: [
-    { id: '1', name: 'Advanced Machine Learning', issuer: 'Stanford University', date: 'June 2023' },
-    { id: '2', name: 'Web Development Bootcamp', issuer: 'Udemy', date: 'March 2023' },
-    { id: '3', name: 'Google Cloud Summit', issuer: 'Google', date: 'April 2023' },
-  ],
-};
-
-// Profile Component
 const Profile = () => {
-  // State to manage profile data
+  // State for profile data
   const [profileData, setProfileData] = useState({
     name: 'Alex Johnson',
     email: 'alex.johnson@university.edu',
@@ -44,15 +24,75 @@ const Profile = () => {
     ],
   });
 
-  // State to control dialog visibility
+  // Derived values for level-up progress (assuming each level is a 500-point increment)
+  const pointsToLevel = 500;
+  const currentPoints = profileData.totalPoints;
+  const currentLevel = Math.floor(currentPoints / pointsToLevel) + 1;
+  const levelProgress = currentPoints % pointsToLevel;
+  const progressPercentage = (levelProgress / pointsToLevel) * 100;
+  const nextLevel = currentLevel + 1;
+
+  // State for AI recommendations
+  const [aiSuggestions, setAiSuggestions] = useState([]);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  // Helper function to extract recommendations by label using regex
+  const extractRecommendation = (text, label) => {
+    // This regex looks for "- **Label:**" and captures the text until the next bullet or the end of the string.
+    const regex = new RegExp(`- \\*\\*${label}:\\*\\*\\s*(.*?)(?=\\n- \\*\\*|$)`, 'is');
+    const match = text.match(regex);
+    return match ? match[1].trim() : 'No recommendation available.';
+  };
+
+  // Fetch AI recommendations when component mounts or profile data changes
+  useEffect(() => {
+    const fetchAiSuggestions = async () => {
+      // Refined prompt with explicit instructions and full profile context
+      const prompt = `
+        You are an AI career coach and level-up advisor.
+        Based on the user's profile below, provide three personalized recommendations to advance their skills and career, each clearly labeled as follows:
+        - **Next Step:** A specific, actionable step they can take immediately (e.g., start a project, enroll in a course).
+        - **Career Insight:** A broader perspective on how their skills and interests align with potential career paths.
+        - **Skill Boost:** A targeted skill or area to focus on for growth.
+        - important: Make sure you, replay with label words("Next Step","Career Insight","Skill boost"), Useful for message extraction.
+        User Profile:
+        - Department: ${profileData.department}
+        - Bio: ${profileData.bio}
+        - Interests: ${profileData.interests.join(', ')}
+        - Recent Certifications: ${profileData.recentCertificates.map(cert => cert.name).join(', ')}
+
+        Ensure each recommendation is concise, directly tied to their profile, and aligns with their interests in machine learning, web development, cloud computing, and data science.
+      `;
+
+      try {
+        const response = await fetch('http://localhost:9000/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: prompt }),
+        });
+        const data = await response.json();
+        if (data.reply) {
+          const reply = data.reply;
+          const nextStep = extractRecommendation(reply, 'Next Step');
+          const careerInsight = extractRecommendation(reply, 'Career Insight');
+          const skillBoost = extractRecommendation(reply, 'Skill Boost');
+          setAiSuggestions([nextStep, careerInsight, skillBoost]);
+        }
+      } catch (error) {
+        console.error('Error fetching AI suggestions:', error);
+        setAiSuggestions(['Error loading recommendations. Please try again later.']);
+      }
+    };
+
+    fetchAiSuggestions();
+  }, [profileData]);
 
   return (
     <div className="w-full space-y-8 animate-fade-in">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold">Your Profile</h1>
-          <p className="text-gray-600">Manage your profile and achievements</p>
+          <h1 className="text-2xl font-bold">Your Level-Up Profile</h1>
+          <p className="text-gray-600">Manage your profile, track progress, and achieve new milestones</p>
         </div>
         <GradientButton variant="outline" onClick={() => setIsEditDialogOpen(true)}>
           <Edit size={16} className="mr-1" />
@@ -62,6 +102,7 @@ const Profile = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
+          {/* Profile Picture and Points */}
           <GlassCard className="text-center py-8">
             <div className="relative mx-auto w-24 h-24 rounded-full bg-gray-100 mb-4 flex items-center justify-center">
               <User size={40} className="text-gray-400" />
@@ -71,13 +112,23 @@ const Profile = () => {
             </div>
             <h2 className="text-xl font-semibold">{profileData.name}</h2>
             <p className="text-gray-600">{profileData.department}</p>
-
             <div className="mt-6 flex justify-center items-center bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-sm font-semibold mx-auto w-max">
               <Award size={16} className="mr-2" />
               {profileData.totalPoints} Points • Rank #{profileData.rank}
             </div>
           </GlassCard>
 
+          {/* Level-Up Progress Card */}
+          <GlassCard>
+            <h3 className="text-lg font-semibold mb-4">Level-Up Progress</h3>
+            <p className="text-gray-600 mb-2">Level {currentLevel} → Level {nextLevel}</p>
+            <div className="w-full bg-gray-200 rounded-full h-4">
+              <div className="bg-blue-500 h-4 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
+            </div>
+            <p className="text-sm text-gray-500 mt-2">{progressPercentage.toFixed(0)}% towards Level {nextLevel}</p>
+          </GlassCard>
+
+          {/* Contact Information */}
           <GlassCard>
             <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
             <div className="space-y-3">
@@ -100,6 +151,7 @@ const Profile = () => {
             </div>
           </GlassCard>
 
+          {/* Interests */}
           <GlassCard>
             <h3 className="text-lg font-semibold mb-4">Interests</h3>
             <div className="flex flex-wrap gap-2">
@@ -113,11 +165,47 @@ const Profile = () => {
         </div>
 
         <div className="lg:col-span-2 space-y-6">
+          {/* AI Recommendations */}
+          <GlassCard>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">AI Recommendations</h3>
+              <Link to="/ai-recommendations" className="text-sm text-blue-600 hover:text-blue-700 flex items-center">
+                View Full Page <ExternalLink size={14} className="ml-1" />
+              </Link>
+            </div>
+            <div className="space-y-3">
+              {aiSuggestions.length > 0 ? (
+                aiSuggestions.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    className={`p-4 border rounded-lg ${index === 0
+                      ? 'border-green-100 bg-green-50'
+                      : index === 1
+                        ? 'border-blue-100 bg-blue-50'
+                        : 'border-purple-100 bg-purple-50'
+                      }`}
+                  >
+                    <h4 className={`font-medium ${index === 0 ? 'text-green-800' : index === 1 ? 'text-blue-800' : 'text-purple-800'}`}>
+                      {index === 0 ? 'Next Step' : index === 1 ? 'Career Insight' : 'Skill Boost'}
+                    </h4>
+                    <p className={`text-sm mt-1 ${index === 0 ? 'text-green-700' : index === 1 ? 'text-blue-700' : 'text-purple-700'}`}>
+                      {suggestion}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-600">Loading AI recommendations...</p>
+              )}
+            </div>
+          </GlassCard>
+
+          {/* About Me */}
           <GlassCard>
             <h3 className="text-lg font-semibold mb-4">About Me</h3>
             <p className="text-gray-600">{profileData.bio}</p>
           </GlassCard>
 
+          {/* Recent Certifications */}
           <GlassCard>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Recent Certifications</h3>
@@ -125,7 +213,6 @@ const Profile = () => {
                 View All
               </a>
             </div>
-
             <div className="space-y-4">
               {profileData.recentCertificates.map((cert) => (
                 <div
@@ -143,53 +230,17 @@ const Profile = () => {
               ))}
             </div>
           </GlassCard>
-
-          <GlassCard>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">AI Recommendations</h3>
-              <Link
-                to="/ai-recommendations"
-                className="text-sm text-blue-600 hover:text-blue-700 flex items-center"
-              >
-                View Full Page <ExternalLink size={14} className="ml-1" />
-              </Link>
-            </div>
-
-            <div className="space-y-3">
-              <div className="p-4 border border-green-100 bg-green-50 rounded-lg">
-                <h4 className="font-medium text-green-800">Suggested Next Step</h4>
-                <p className="text-sm text-green-700 mt-1">
-                  Based on your interests in Machine Learning, we recommend taking the "Advanced Deep Learning" certification from DeepLearning.ai.
-                </p>
-              </div>
-
-              <div className="p-4 border border-blue-100 bg-blue-50 rounded-lg">
-                <h4 className="font-medium text-blue-800">Career Path Insight</h4>
-                <p className="text-sm text-blue-700 mt-1">
-                  Your certification pattern indicates strong potential for a Data Scientist role. Consider adding cloud deployment skills to enhance your profile.
-                </p>
-              </div>
-
-              <div className="p-4 border border-purple-100 bg-purple-50 rounded-lg">
-                <h4 className="font-medium text-purple-800">Skill Gap Alert</h4>
-                <p className="text-sm text-purple-700 mt-1">
-                  We noticed your portfolio lacks certifications in database technologies. This could be valuable for your web development pursuits.
-                </p>
-              </div>
-            </div>
-          </GlassCard>
         </div>
       </div>
 
-      {/* Render the EditProfileDialog when isEditDialogOpen is true */}
       {isEditDialogOpen && (
         <EditProfileDialog
           profileData={profileData}
           onSave={(newData) => {
-            setProfileData(newData); // Update profile data
-            setIsEditDialogOpen(false); // Close dialog
+            setProfileData(newData);
+            setIsEditDialogOpen(false);
           }}
-          onClose={() => setIsEditDialogOpen(false)} // Close dialog without saving
+          onClose={() => setIsEditDialogOpen(false)}
         />
       )}
     </div>
