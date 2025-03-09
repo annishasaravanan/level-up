@@ -1,41 +1,32 @@
-
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-const GradientButton = ({
-  className,
-  children,
-  variant = 'default',
-  size = 'md',
-  fullWidth = false,
-  ...props
+const GradientButton = ({ 
+  children, 
+  onClick, 
+  type = 'button', 
+  disabled = false,
+  className = '',
+  ...props 
 }) => {
-  const baseStyles = 'relative overflow-hidden rounded-full font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 active:scale-[0.98]';
-  
-  const sizeStyles = {
-    sm: 'px-4 py-1.5 text-sm',
-    md: 'px-6 py-2.5 text-base',
-    lg: 'px-8 py-3.5 text-lg',
-  };
-
-  const variantStyles = {
-    default: 'text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:shadow-lg hover:shadow-blue-500/20',
-    secondary: 'text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-100',
-    outline: 'text-blue-600 bg-transparent border border-blue-200 hover:border-blue-400 hover:bg-blue-50/50',
-  };
-
   return (
     <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
       className={cn(
-        baseStyles,
-        sizeStyles[size],
-        variantStyles[variant],
-        fullWidth ? 'w-full' : '',
+        "relative px-6 py-2.5 font-medium text-white rounded-lg overflow-hidden group",
+        "before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-500 before:to-indigo-600 before:transition-all before:duration-500",
+        "hover:before:from-indigo-500 hover:before:to-blue-600",
+        "active:scale-[0.98] active:shadow-inner active:before:opacity-90",
+        "focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2",
+        "disabled:opacity-70 disabled:cursor-not-allowed disabled:before:from-gray-400 disabled:before:to-gray-500 disabled:before:opacity-70 disabled:shadow-none disabled:transform-none",
+        "transition-all duration-200 shadow-md hover:shadow-lg",
         className
       )}
       {...props}
     >
-      <span className="relative z-10 flex items-center justify-center gap-2">
+      <span className="relative z-10 flex items-center justify-center">
         {children}
       </span>
     </button>

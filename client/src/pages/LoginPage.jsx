@@ -178,10 +178,10 @@ const LoginPage = () => {
             </Link>
           </p>
           
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+          {/* <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
             <AlertCircle size={16} />
             <span>Secure login with industry-standard encryption</span>
-          </div>
+          </div> */}
 
           {/* Social Login Options (placeholder) */}
           <div className="mt-4">
@@ -202,7 +202,7 @@ const LoginPage = () => {
                 <span className="text-gray-400">F</span>
               </Button>
             </div>
-            <p className="text-xs text-gray-400 mt-2">Social login coming soon</p>
+            {/* <p className="text-xs text-gray-400 mt-2">Social login coming soon</p> */}
           </div>
         </div>
       </GlassCard>
