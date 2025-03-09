@@ -406,10 +406,10 @@ const RegisterPage = () => {
               Sign In
             </Link>
           </p>
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+          {/* <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
             <AlertCircle size={16} />
             <span>Your data is protected with industry-standard encryption</span>
-          </div>
+          </div> */}
         </div>
       </GlassCard>
     </div>
