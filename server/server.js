@@ -13,8 +13,13 @@ const PORT = process.env.PORT || 3000;
 // Connect to MongoDB
 connectDB();
 
+// Import routes
 const chatRoute = require("./routes/chat");
+const recommendationsRoute = require("./routes/recommendations");
+
+// Use routes
 app.use("/api", chatRoute);
+app.use("/api", recommendationsRoute);
 
 app.get("/", (req, res) => {
     res.send("Server is running fine.");

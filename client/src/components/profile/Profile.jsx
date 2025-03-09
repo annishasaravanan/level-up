@@ -61,7 +61,7 @@ const Profile = () => {
         - Interests: ${profileData.interests.join(', ')}
         - Recent Certifications: ${profileData.recentCertificates.map(cert => cert.name).join(', ')}
 
-        Ensure each recommendation is concise, directly tied to their profile, and aligns with their interests in machine learning, web development, cloud computing, and data science.
+        Ensure each recommendation is concise, directly tied to their profile, and aligns with their interests.
       `;
 
       try {
