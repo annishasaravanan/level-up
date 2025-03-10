@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import GradientButton from '../ui/GradientButton';
 
 const Navbar = () => {
@@ -9,23 +8,20 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
+  // Replace this with your actual authentication logic.
+  const isLoggedIn = false; // or use a context/hook to get the auth state
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
@@ -41,11 +37,10 @@ const Navbar = () => {
 
   return (
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled
-          ? 'py-2 bg-white/90 backdrop-blur-md shadow-sm'
-          : 'py-4 bg-transparent'
-      }`}
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled
+        ? 'py-2 bg-white/90 backdrop-blur-md shadow-sm'
+        : 'py-4 bg-transparent'
+        }`}
     >
       <div className="container mx-auto px-4 md:px-6">
         <nav className="flex items-center justify-between">
@@ -63,11 +58,10 @@ const Navbar = () => {
                 <li key={link.name}>
                   <Link
                     to={link.path}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      location.pathname === link.path
-                        ? 'text-blue-600 bg-blue-50'
-                        : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
-                    }`}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${location.pathname === link.path
+                      ? 'text-blue-600 bg-blue-50'
+                      : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
+                      }`}
                   >
                     {link.name}
                   </Link>
@@ -75,16 +69,26 @@ const Navbar = () => {
               ))}
             </ul>
             <div className="ml-4 flex space-x-2">
-              <Link to="/login">
-                <GradientButton size="sm" variant="outline">
-                  Sign In
-                </GradientButton>
-              </Link>
-              <Link to="/register">
-                <GradientButton size="sm" variant="default">
-                  Register
-                </GradientButton>
-              </Link>
+              {isLoggedIn ? (
+                <Link to="/logout">
+                  <GradientButton size="sm" variant="default">
+                    Logout
+                  </GradientButton>
+                </Link>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <GradientButton size="sm" variant="outline">
+                      Sign In
+                    </GradientButton>
+                  </Link>
+                  <Link to="/register">
+                    <GradientButton size="sm" variant="default">
+                      Register
+                    </GradientButton>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -106,11 +110,10 @@ const Navbar = () => {
                 <li key={link.name}>
                   <Link
                     to={link.path}
-                    className={`block px-4 py-3 text-base font-medium rounded-lg ${
-                      location.pathname === link.path
-                        ? 'text-blue-600 bg-blue-50 dark:bg-gray-800'
-                        : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
-                    }`}
+                    className={`block px-4 py-3 text-base font-medium rounded-lg ${location.pathname === link.path
+                      ? 'text-blue-600 bg-blue-50 dark:bg-gray-800'
+                      : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                      }`}
                   >
                     {link.name}
                   </Link>
@@ -118,12 +121,26 @@ const Navbar = () => {
               ))}
             </ul>
             <div className="px-4 pb-4 flex flex-col space-y-2">
-              <Link to="/login">
-                <GradientButton fullWidth variant="outline">Sign In</GradientButton>
-              </Link>
-              <Link to="/register">
-                <GradientButton fullWidth>Register</GradientButton>
-              </Link>
+              {isLoggedIn ? (
+                <Link to="/logout">
+                  <GradientButton fullWidth variant="default">
+                    Logout
+                  </GradientButton>
+                </Link>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <GradientButton fullWidth variant="outline">
+                      Sign In
+                    </GradientButton>
+                  </Link>
+                  <Link to="/register">
+                    <GradientButton fullWidth>
+                      Register
+                    </GradientButton>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

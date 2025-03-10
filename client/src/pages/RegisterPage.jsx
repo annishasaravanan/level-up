@@ -54,8 +54,9 @@ const RegisterPage = () => {
       department: "",
       college: "",
       yearOfStudy: "",
-      aoi: "", // Added Area of Interest
+      aoi: "",
       bio: "",
+      role: "student", // Default role
     },
     mode: "onChange",
   });
@@ -97,21 +98,51 @@ const RegisterPage = () => {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log("Registration submitted", { ...data, profileImage });
-      
-      toast({
-        title: "Registration Successful",
-        description: "Welcome to Level Up!",
-        variant: "success",
+      const formData = {
+        fullName: data.fullName,
+        email: data.email,
+        username: data.username,
+        password: data.password,
+        department: data.department,
+        college: data.college,
+        yearOfStudy: data.yearOfStudy,
+        aoi: data.aoi,
+        bio: data.bio,
+        profileImage, // Base64 image
+        role: data.role, // Include role
+      };
+
+      const response = await fetch("http://localhost:9000/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
-      
-      navigate('/dashboard');
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Show success toast
+        toast({
+          title: "Registration Successful",
+          description: "You have been registered successfully!",
+          variant: "success",
+        });
+
+        // Redirect to login page after 2 seconds
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      } else {
+        throw new Error(result.message || "Registration failed");
+      }
     } catch (error) {
+      // Show error toast
       toast({
         variant: "destructive",
         title: "Registration Failed",
-        description: "Please try again later",
+        description: error.message || "Please try again later",
       });
     } finally {
       setIsSubmitting(false);
@@ -137,7 +168,7 @@ const RegisterPage = () => {
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-semibold text-gray-800">Personal Details</h2>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField
                   control={form.control}
@@ -235,7 +266,7 @@ const RegisterPage = () => {
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-semibold text-gray-800">Security</h2>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
@@ -319,7 +350,7 @@ const RegisterPage = () => {
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-semibold text-gray-800">Academic Details</h2>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField
                   control={form.control}
@@ -376,6 +407,29 @@ const RegisterPage = () => {
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  control={form.control}
+                  name="role"
+                  rules={{ required: "Role is required" }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Role</FormLabel>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select your role" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="student">Student</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </section>
 
@@ -406,10 +460,10 @@ const RegisterPage = () => {
               Sign In
             </Link>
           </p>
-          {/* <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
             <AlertCircle size={16} />
             <span>Your data is protected with industry-standard encryption</span>
-          </div> */}
+          </div>
         </div>
       </GlassCard>
     </div>

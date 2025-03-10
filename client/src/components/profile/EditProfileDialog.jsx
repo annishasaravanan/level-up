@@ -7,7 +7,15 @@ import GradientButton from '../ui/GradientButton';
 // EditProfileDialog Component
 const EditProfileDialog = ({ profileData, onSave, onClose }) => {
   // Local state to hold the edited data, initialized with the current profile data
-  const [editedData, setEditedData] = useState({ ...profileData });
+  const [editedData, setEditedData] = useState({
+    name: profileData?.username || "",
+    email: profileData?.email || "",
+    department: profileData?.department || "",
+    location: profileData?.location || "",
+    bio: profileData?.bio || "",
+    aoi: profileData?.aoi || [],
+  });
+
 
   // Handle changes to text inputs and textarea
   const handleChange = (e) => {
@@ -17,8 +25,8 @@ const EditProfileDialog = ({ profileData, onSave, onClose }) => {
 
   // Handle changes to interests (convert comma-separated string to array)
   const handleInterestsChange = (e) => {
-    const interests = e.target.value.split(',').map((i) => i.trim());
-    setEditedData((prev) => ({ ...prev, interests }));
+    const aoi = e.target.value.split(',').map((i) => i.trim());
+    setEditedData((prev) => ({ ...prev, aoi }));
   };
 
   // Handle form submission to save changes
@@ -44,7 +52,7 @@ const EditProfileDialog = ({ profileData, onSave, onClose }) => {
               <input
                 type="text"
                 name="name"
-                value={editedData.name}
+                value={editedData.username || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
               />
@@ -54,7 +62,7 @@ const EditProfileDialog = ({ profileData, onSave, onClose }) => {
               <input
                 type="email"
                 name="email"
-                value={editedData.email}
+                value={editedData.email || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
               />
@@ -64,7 +72,7 @@ const EditProfileDialog = ({ profileData, onSave, onClose }) => {
               <input
                 type="text"
                 name="department"
-                value={editedData.department}
+                value={editedData.department || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
               />
@@ -74,7 +82,7 @@ const EditProfileDialog = ({ profileData, onSave, onClose }) => {
               <input
                 type="text"
                 name="location"
-                value={editedData.location}
+                value={editedData.location || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
               />
@@ -93,7 +101,7 @@ const EditProfileDialog = ({ profileData, onSave, onClose }) => {
               <label className="block text-sm font-medium text-gray-700">Interests (comma-separated)</label>
               <input
                 type="text"
-                value={editedData.interests.join(', ')}
+                value={(editedData.aoi || []).join(', ')}
                 onChange={handleInterestsChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
               />
