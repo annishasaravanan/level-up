@@ -4,7 +4,7 @@ const CodingCertificateFields = ({ formData, handleChange }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div>
-        <label htmlFor="codingPlatform" className="form-label">Platform</label>
+        <label htmlFor="codingPlatform" className="form-label block mb-3">Platform</label>
         <input
           id="codingPlatform"
           name="codingPlatform"
@@ -16,7 +16,7 @@ const CodingCertificateFields = ({ formData, handleChange }) => {
         />
       </div>
       <div>
-        <label htmlFor="codingLanguage" className="form-label">Programming Language(s)</label>
+        <label htmlFor="codingLanguage" className="form-label block mb-3">Programming Language(s)</label>
         <input
           id="codingLanguage"
           name="codingLanguage"

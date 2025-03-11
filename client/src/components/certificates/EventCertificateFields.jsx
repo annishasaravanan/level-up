@@ -5,7 +5,7 @@ const EventCertificateFields = ({ formData, handleChange }) => {
   return (
     <div className="space-y-4">
       <div>
-        <label htmlFor="eventLocation" className="form-label">Event Location</label>
+        <label htmlFor="eventLocation" className="form-label block mb-3">Event Location</label>
         <div className="relative">
           <MapPin size={16} className="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400" />
           <input

@@ -4,7 +4,7 @@ const WorkshopCertificateFields = ({ formData, handleChange }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div>
-        <label htmlFor="workshopDuration" className="form-label">Workshop Duration</label>
+        <label htmlFor="workshopDuration" className="form-label block mb-3">Workshop Duration</label>
         <input
           id="workshopDuration"
           name="workshopDuration"
@@ -16,7 +16,7 @@ const WorkshopCertificateFields = ({ formData, handleChange }) => {
         />
       </div>
       <div>
-        <label htmlFor="workshopInstructor" className="form-label">Instructor/Facilitator</label>
+        <label htmlFor="workshopInstructor" className="form-label block mb-3">Instructor/Facilitator</label>
         <input
           id="workshopInstructor"
           name="workshopInstructor"
