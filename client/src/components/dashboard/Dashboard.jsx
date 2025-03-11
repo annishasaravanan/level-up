@@ -1,89 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Plus, Filter, Search } from 'lucide-react';
 import ActivitySummary from './ActivitySummary';
-import CertificateCard from './CertificateCard';
 import GradientButton from '../ui/GradientButton';
 import CertificateForm from './CertificateForm';
 import { Toaster } from "@/components/ui/toaster";
+import CertificatesList from './CertificatesList';
 
-const userStats = {
-  totalCertificates: 12,
-  totalPoints: 1450,
-  recentActivities: 3,
-  rank: 7,
-};
-
-const certificates = [
-  {
-    id: '1',
-    title: 'Advanced Machine Learning',
-    issuer: 'Stanford University',
-    date: 'June 10, 2023',
-    type: 'course',
-    points: 250,
-    difficulty: 'expert',
-  },
-  {
-    id: '2',
-    title: 'Web Development Bootcamp',
-    issuer: 'Udemy',
-    date: 'March 15, 2023',
-    type: 'course',
-    points: 150,
-    difficulty: 'medium',
-  },
-  {
-    id: '3',
-    title: 'Google Cloud Summit',
-    issuer: 'Google',
-    date: 'April 22, 2023',
-    type: 'event',
-    points: 100,
-    difficulty: 'easy',
-  },
-  {
-    id: '4',
-    title: 'Data Science Workshop',
-    issuer: 'Microsoft',
-    date: 'May 5, 2023',
-    type: 'workshop',
-    points: 120,
-    difficulty: 'medium',
-  },
-  {
-    id: '5',
-    title: 'LeetCode 75 Challenges',
-    issuer: 'LeetCode',
-    date: 'July 1, 2023',
-    type: 'coding',
-    points: 180,
-    difficulty: 'hard',
-  },
-  {
-    id: '6',
-    title: 'AWS Cloud Practitioner',
-    issuer: 'Amazon Web Services',
-    date: 'Feb 28, 2023',
-    type: 'course',
-    points: 200,
-    difficulty: 'medium',
-  },
-];
 
 const Dashboard = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [selectedFormType, setSelectedFormType] = useState('');
-
-  const filteredCertificates = certificates.filter(cert => {
-    const matchesSearch = cert.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         cert.issuer.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = filterType ? cert.type === filterType : true;
-    
-    return matchesSearch && matchesFilter;
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState(null);
+  const [stats, setStats] = useState({
+    totalCertificates: 0,
+    totalPoints: 0,
+    recentActivities: 0,
+    rank: 0,
   });
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:9000/api/certificates/stats', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
 
+        if (!response.ok) throw new Error('Failed to fetch stats');
+
+        const data = await response.json();
+        setStats(data);
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, []);
   const filterOptions = [
     { value: null, label: 'All Types' },
     { value: 'course', label: 'Courses' },
@@ -99,7 +54,6 @@ const Dashboard = () => {
   };
   
   const handleFormTypeSelect = (type) => {
-    // If empty string is passed, reset to type selection screen
     setSelectedFormType(type);
   };
   
@@ -123,7 +77,7 @@ const Dashboard = () => {
         </GradientButton>
       </div>
       
-      <ActivitySummary stats={userStats} />
+      <ActivitySummary stats={stats} />
       
       {showForm && (
         <div className="w-full animate-scale-in">
@@ -163,18 +117,10 @@ const Dashboard = () => {
             </select>
           </div>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCertificates.length > 0 ? (
-            filteredCertificates.map((certificate) => (
-              <CertificateCard key={certificate.id} certificate={certificate} />
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className="text-gray-500">No certificates found matching your criteria.</p>
-            </div>
-          )}
-        </div>
+        <CertificatesList 
+          searchQuery={searchQuery}
+          filterType={filterType}
+        />
       </div>
       
       <Toaster />

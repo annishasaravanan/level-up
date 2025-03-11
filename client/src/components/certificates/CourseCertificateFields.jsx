@@ -5,7 +5,7 @@ const CourseCertificateFields = ({ formData, handleChange }) => {
   return (
     <div className="space-y-4">
       <div>
-        <label htmlFor="certificateUrl" className="form-label">Credential URL</label>
+        <label htmlFor="certificateUrl" className="form-label block mb-3">Credential URL</label>
         <div className="relative">
           <Award size={16} className="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400" />
           <input
